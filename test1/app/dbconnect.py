@@ -2,7 +2,7 @@ import sqlite3
 from flask import current_app, g
 from flask.cli import with_appcontext
 
-DATABASE = 'C://Users//developer//Desktop//test1.db'
+DATABASE = './test1.db'
 
 def connection():
     db = getattr(g,'_test1', None)
