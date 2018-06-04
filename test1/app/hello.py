@@ -60,23 +60,29 @@ def registration():
     form = RegistrationForm(request.form)
     c, db = connection()
     if request.method == "POST" and form.validate():
-       
         username = form.username.data
         email = form.email.data
         password = form.password.data
         confirm = form.confirm.data
+        c, db = connection()
         
         x = c.execute("SELECT * FROM registration WHERE username = (%s)", username)
-
-        if int(len(x)) > 0:
+        
+        if int(x) > 0:
             flash("Username already exist, please choose another")
-            return render_template('registration.html')        
+            return render_template('registration.html', form=form)        
         else:
             c.execute("INSERT INTO registration (username, email, password, confirm) VALUES (%s, %s, %s, %s)", (username, email, password, confirm) )
             db.commit()
+           
             flash("Thanks for registration")
-            return render_template('login.html')        
-    return render_template('home.html')
+            c.close()
+            db.close()
+
+            session["logged_in"] = True
+            session["username"] = request.form['username']
+            return render_template('home.html')    
+    return  render_template('registration.html',form=form)
     
     db.close()
 
