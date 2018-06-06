@@ -21,13 +21,6 @@ def about_us():
 def about(name):
     return render_template('about.html', name=name)
 
-def login_required():
-    if 'logged_in' in session:
-        return 1
-    else:
-        return redirect(url_for('login'))
-    
-
 
 @app.route("/login/", methods =['GET', 'POST'] )
 def login():
