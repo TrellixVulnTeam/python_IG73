@@ -51,25 +51,25 @@ class RegistrationForm(Form):
 @app.route("/registration/", methods =['GET', 'POST'] )
 def registration():
     form = RegistrationForm(request.form)
-    c, db = connection()
+    conn, db = connection()
     if request.method == "POST" and form.validate():
         username = form.username.data
         email = form.email.data
         password = form.password.data
         confirm = form.confirm.data
-        c, db = connection()
+        conn, db = connection()
         
-        x = c.execute("SELECT * FROM registration WHERE username = (%s)", username)
+        x = conn.execute("SELECT * FROM registration WHERE username = (%s)", username)
         
         if int(x) > 0:
             flash("Username already exist, please choose another")
             return render_template('registration.html', form=form)        
         else:
-            c.execute("INSERT INTO registration (username, email, password, confirm) VALUES (%s, %s, %s, %s)", (username, email, password, confirm) )
+            conn.execute("INSERT INTO registration (username, email, password, confirm) VALUES (%s, %s, %s, %s)", (username, email, password, confirm) )
             db.commit()
            
             flash("Thanks for registration")
-            c.close()
+            conn.close()
             db.close()
 
             session["logged_in"] = True
