@@ -2,15 +2,9 @@ import sqlite3
 
 db = 'C:/Users/developer/Desktop/test1.db'
 
-
 def connection():
-    conn = db.cursor()
-    if db is None:
-       sqlite3.connect(db)
-    return conn, db 
+    conn = sqlite3.connect(database="test1")
+         
+    c = conn.cursor()
 
-def close_connection():
-    if db is not None:
-        db.close()
-
-
+    return c, conn

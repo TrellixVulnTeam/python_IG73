@@ -3,7 +3,7 @@ import sqlite3
 
 from wtforms import Form, StringField, BooleanField, PasswordField, DateTimeField, IntegerField, validators
 
-from dbconnect import connection, close_connection
+from dbconnect import connection
 
 
 app = Flask(__name__)
@@ -21,23 +21,36 @@ def about_us():
 def about(name):
     return render_template('about.html', name=name)
 
+def login_required():
+    if 'logged_in' in session:
+        flash("You already log in")
+    else:
+        flash("You need to login first")
+        return redirect(url_for('login'))
+
+@app.route("/logout/")
+def logout():
+    session.clear() 
+    flash("You have been logged out")   
+    return redirect(url_for('home'))
+
 
 @app.route("/login/", methods =['GET', 'POST'] )
 def login():
     error = None
+    c, conn = connection()
     if request.method == 'POST':
-        if request.form['username'] != 'admin' and request.form['password'] != 'admin':
-            error = 'Invalid user'
-        else:
+        data = conn.execute("SELECT * FROM user WHERE username = (?)", request.form['username'])
+        data = conn.fetchone()
+        if request.form['password', data]:
             session['logged_in'] = True
             session['username'] = request.form['username']
+            flash("You are now logged in")
             return redirect(url_for('home'))
+        else:
+            error = "Invalid User"
     return render_template('login.html', error=error)
 
-@app.route("/logout/")
-def logout():
-    session.clear()    
-    return redirect(url_for('home'))
 
 
 class RegistrationForm(Form):
@@ -51,26 +64,25 @@ class RegistrationForm(Form):
 @app.route("/registration/", methods =['GET', 'POST'] )
 def registration():
     form = RegistrationForm(request.form)
-    conn, db = connection()
+    c, conn = connection()
     if request.method == "POST" and form.validate():
         username = form.username.data
         email = form.email.data
         password = form.password.data
-        confirm = form.confirm.data
-        conn, db = connection()
+        c, conn = connection()
         
-        x = conn.execute("SELECT * FROM registration WHERE username = (%s)", username)
+        x = c.execute("SELECT * FROM user WHERE username = (?)", username)
         
         if int(x) > 0:
             flash("Username already exist, please choose another")
             return render_template('registration.html', form=form)        
         else:
-            conn.execute("INSERT INTO registration (username, email, password, confirm) VALUES (%s, %s, %s, %s)", (username, email, password, confirm) )
-            db.commit()
+            c.execute("INSERT INTO registration (username, email, password) VALUES (?,?,?))", (Username, Email, Password) )
+            conn.commit()
            
             flash("Thanks for registration")
             conn.close()
-            db.close()
+            c.close()
 
             session["logged_in"] = True
             session["username"] = request.form['username']
