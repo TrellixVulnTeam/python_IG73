@@ -40,8 +40,8 @@ def login():
     error = None
     c, conn = connection()
     if request.method == 'POST':
-        data = conn.execute("SELECT * FROM user WHERE username = (?)", request.form['username'])
-        data = conn.fetchone()
+        data = c.execute("SELECT * FROM user WHERE username = (?)", request.form['username'])
+        data = c.fetchone()
         if request.form['password', data]:
             session['logged_in'] = True
             session['username'] = request.form['username']

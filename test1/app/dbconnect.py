@@ -1,9 +1,14 @@
 import sqlite3
 
-db = 'C:/Users/developer/Desktop/test1.db'
+
+datadir = 'C:/Users/developer/Desktop/test1.db'
+datafile = 'test1.DB'
+datadir = '../'
+db = datadir+datafile
+
 
 def connection():
-    conn = sqlite3.connect(database="test1")
+    conn = sqlite3.connect(db)
          
     c = conn.cursor()
 
