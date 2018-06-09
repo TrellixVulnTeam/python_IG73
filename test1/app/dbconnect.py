@@ -1,8 +1,8 @@
 import sqlite3
 
 
-datadir = 'C:/Users/developer/Desktop/test1.db'
-datafile = 'test1.DB'
+datadir = 'C:\\sqlite3\\test1.db'
+datafile = 'test1.db'
 datadir = '../'
 db = datadir+datafile
 

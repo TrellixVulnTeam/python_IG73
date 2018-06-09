@@ -40,7 +40,7 @@ def login():
     error = None
     c, conn = connection()
     if request.method == 'POST':
-        data = c.execute("SELECT * FROM user WHERE username = (?)", request.form['username'])
+        data = c.execute("SELECT * FROM `user` WHERE username = ('%s')", request.form['username'])
         data = c.fetchone()
         if request.form['password', data]:
             session['logged_in'] = True
@@ -67,17 +67,18 @@ def registration():
     c, conn = connection()
     if request.method == "POST" and form.validate():
         username = form.username.data
+        age = form.age.data
         email = form.email.data
         password = form.password.data
         c, conn = connection()
         
-        x = c.execute("SELECT * FROM user WHERE username = (?)", username)
+        x = c.execute("SELECT * FROM user WHERE username = ('%s')", username)
         
         if int(x) > 0:
             flash("Username already exist, please choose another")
             return render_template('registration.html', form=form)        
         else:
-            c.execute("INSERT INTO registration (username, email, password) VALUES (?,?,?))", (Username, Email, Password) )
+            c.execute("INSERT INTO registration (username, email, password) VALUES ('%s', '%s', '%s', '%s')))", (Username, age, Email, Password) )
             conn.commit()
            
             flash("Thanks for registration")
