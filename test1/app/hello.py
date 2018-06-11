@@ -7,6 +7,7 @@ from dbconnect import connection
 
 
 app = Flask(__name__)
+app.secret_key = 'my best secret key'
 
  
 @app.route("/")
@@ -37,12 +38,12 @@ def logout():
 
 @app.route("/login/", methods =['GET', 'POST'] )
 def login():
-    error = None
+    error= 'None'
     c, conn = connection()
     if request.method == 'POST':
-        data = c.execute("SELECT * FROM `user` WHERE username = ('%s')", request.form['username'])
+        data = c.execute("SELECT * FROM `user` WHERE `username` = ? AND `password` = ?", (request.form['username'], request.form['password']))
         data = c.fetchone()
-        if request.form['password', data]:
+        if data:
             session['logged_in'] = True
             session['username'] = request.form['username']
             flash("You are now logged in")
@@ -55,30 +56,32 @@ def login():
 
 class RegistrationForm(Form):
     username = StringField('Username', [validators.Length(min=4, max=256)])
+    age = StringField('Age',[validators.Length(min=1, max=3)] )
     email = StringField('Email', [validators.Length(min=6, max=30)])
-    password = PasswordField('Password', [validators.Required(), validators.EqualTo('confirm', message = "Password must be match.")])
-    confirm = PasswordField('Repeat Password')
-    reg_date = DateTimeField('Registration Date',[])
-
-
+    password = PasswordField('Password', [validators.Required(), validators.EqualTo('password', message = "Password must be match.")])
+    place = StringField('Place', [validators.Length(min=1, max=256)])
+    
 @app.route("/registration/", methods =['GET', 'POST'] )
 def registration():
     form = RegistrationForm(request.form)
     c, conn = connection()
     if request.method == "POST" and form.validate():
         username = form.username.data
-        age = form.age.data
-        email = form.email.data
-        password = form.password.data
-        c, conn = connection()
+                
+        x = c.execute("SELECT * FROM registration WHERE username = (?)", [username])
         
-        x = c.execute("SELECT * FROM user WHERE username = ('%s')", username)
-        
-        if int(x) > 0:
+        if x:
             flash("Username already exist, please choose another")
             return render_template('registration.html', form=form)        
         else:
-            c.execute("INSERT INTO registration (username, email, password) VALUES ('%s', '%s', '%s', '%s')))", (Username, age, Email, Password) )
+            username = form.username.data
+            age = form.age.data
+            email = form.email.data
+            password = form.password.data
+            place = form.place.data
+            c, conn = connection()
+
+            c.execute("INSERT INTO registration (username, age, email, password, place) VALUES (?, ?, ?, ?, ?)))", ([username], [age], [email], password, place) )
             conn.commit()
            
             flash("Thanks for registration")
@@ -87,7 +90,8 @@ def registration():
 
             session["logged_in"] = True
             session["username"] = request.form['username']
-            return render_template('home.html')    
+            return render_template('home.html') 
+
     return  render_template('registration.html',form=form)
     
     db.close()
