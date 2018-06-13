@@ -12,8 +12,11 @@ app.secret_key = "my first secret key"
 def home():
     return render_template('home.html')
 
+class LoginForm(Form):
+    
+
 @app.route('/user/', methods=['POST','GET'])
-def new_user():
+def user_login():
     c, conn = connection()
     if request.method == 'POST':
         c.execute("SELECT * FROM user WHERE username=(?)",[username])
@@ -23,7 +26,11 @@ def new_user():
     rv = c.fetchall()
     return render_template("user.html")
 
-
+@app.route('/logout')
+def logout():
+    session.clear()
+    flash("You are logged out now")
+    return redirect(url_for('home'))
 
 if __name__ == "__main__":
     app.run(debug=True)
