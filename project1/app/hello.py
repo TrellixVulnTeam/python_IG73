@@ -9,8 +9,8 @@ app = Flask(__name__)
 app.secret_key = "my first secret key"
 
 @app.route('/')
-def hello_world():
-    return 'Hello World!'
+def home():
+    return render_template('home.html')
 
 @app.route('/user/', methods=['POST','GET'])
 def new_user():
@@ -21,7 +21,7 @@ def new_user():
     
     c.execute("SELECT * FROM user")
     rv = c.fetchall()
-    return str(rv)
+    return render_template("user.html")
 
 
 

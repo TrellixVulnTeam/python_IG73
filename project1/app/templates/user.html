@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>Login Please</h2>
+{% if session['logged_in'] %}
+<p>You are logged in already!</p>
+{% else %}
+<form action="/user" method="POST">
+<div class="login">
+    <div class="login-screen">
+        <div class="login-form">
+            <p><input type='text' class="form-control" name="username" placeholder="Username"/></p>
+            <p><input type="password" class="form-control" name="password" placeholder="Password"/></p>
+            <p><input type="submit" class="btn btn-primary btn-large btn-block" value="Login"/></p>
+        </div>
+    </div>
+</div>
+</form>
+{% endif %}
+{% endblock %}
