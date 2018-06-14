@@ -12,24 +12,30 @@ app.secret_key = "my first secret key"
 def home():
     return render_template('home.html')
 
-class LoginForm(Form):
+def LoginForm():
     username = StringField('Username', [validators.length(min=1, max=256)])
     password = PasswordField('Password', [validators.Required(), validators.EqualTo('password', message="Password must be match")] )
-
-@app.route('/user/', methods=['POST','GET'])
-def user_login():
-    form = LoginForm(request.form)
-    c, conn = connection()
+   
+    
+@app.route('/login/', methods=['POST','GET'])
+def login():
+    form = LoginForm()
+    c,conn = connection()
     if request.method == 'POST':
-        data = c.execute("SELECT * FROM user WHERE username= ? AND password= ?", (request.form['username'], request.form['password'])
-        
-        if (data):
-            session['logged_in'] = True
-            session['username'] = request.form['username']
-            flash("You are now login user")
+        username = request.form['username']
+        password = request.form['password']
+        data = c.execute("SELECT COUNT(1) FROM user WHERE username= ? ", request.form['username'])
+        if c.fetchone(): 
+            c.execute("SELECT password FROM user WHERE username= ? ", request.form['username'])
+            for row in c.fetchall():
+                session['username'] = request.form['username'] 
+                session['logged_in'] != True   
+                return redirect(url_for('home'))
+        else:   
+            flash("You are not authorise to login")
             redirect(url_for('home'))
-        else:
-            c.execute("INSERT INTO user ")
+    else:
+        c.execute("INSERT INTO user username='?' ")
 
     c.execute("SELECT * FROM user")
     rv = c.fetchall()
