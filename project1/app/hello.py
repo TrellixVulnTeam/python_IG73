@@ -24,22 +24,17 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        data = c.execute("SELECT COUNT(1) FROM user WHERE username= ? ", request.form['username'])
-        if c.fetchone(): 
-            c.execute("SELECT password FROM user WHERE username= ? ", request.form['username'])
-            for row in c.fetchall():
-                session['username'] = request.form['username'] 
-                session['logged_in'] != True   
-                return redirect(url_for('home'))
-        else:   
+        data = "SELECT * FROM user WHERE username= ? AND password= ?",([username],[password])
+        c.execute(data)
+        if int(data=0):
             flash("You are not authorise to login")
-            redirect(url_for('home'))
+        else:
+            flash("You are already login")
     else:
-        c.execute("INSERT INTO user username='?' ")
+        if int(data=0):
 
-    c.execute("SELECT * FROM user")
-    rv = c.fetchall()
-    return render_template("user.html")
+    c.close()
+    conn.close()
 
 @app.route('/logout')
 def logout():
