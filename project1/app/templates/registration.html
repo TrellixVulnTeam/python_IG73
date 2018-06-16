@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>Registration Please</h2>
+{% if session['logged_in'] %}
+<p>You are logged in already!</p>
+{% else %}
+<form action="/registration/" method="POST">
+<div class="registration">
+    <div class="registration-screen">
+        <div class="registration-form">
+            <p><input type='text' class="form-control" name="username" placeholder="Username"/></p>
+            <p><input type='int' class="form-control" name="age" placeholder="Age"/></p>
+            <p><input type='text' class="form-control" name="email" placeholder="Email"/></p>
+            <p><input type="password" class="form-control" name="password" placeholder="Password"/></p>
+            <p><input type='text' class="form-control" name="place" placeholder="Place"/></p>
+            <p><input type="submit" class="btn btn-primary btn-large btn-block" value="Login"/></p>
+        </div>
+    </div>
+</div>
+</form>
+{% endif %}
+{% endblock %}

@@ -68,8 +68,8 @@ def registration():
     if request.method == "POST" and form.validate():
         username = form.username.data
                 
-        x = c.execute("SELECT * FROM registration WHERE username = (?)", [username])
-        
+        c.execute("SELECT * FROM registration WHERE username = (?)", [username])
+        x= c.fetchone()
         if x:
             flash("Username already exist, please choose another")
             return render_template('registration.html', form=form)        
