@@ -1,9 +1,8 @@
 {% extends "layout.html" %}
 {% block content %}
-<h2>Registration Please</h2>
-{% if session['logged_in'] %}
-<p>You are logged in already!</p>
-{% else %}
+<div class="container">
+<h2 class="logo">Registration Please</h2>
+
 <form action="/registration/" method="POST">
 <div class="registration">
     <div class="registration-screen">
@@ -13,10 +12,10 @@
             <p><input type='text' class="form-control" name="email" placeholder="Email"/></p>
             <p><input type="password" class="form-control" name="password" placeholder="Password"/></p>
             <p><input type='text' class="form-control" name="place" placeholder="Place"/></p>
-            <p><input type="submit" class="btn btn-primary btn-large btn-block" value="Login"/></p>
+            <p><input type="submit" class="btn btn-primary btn-large btn-block" value="Sign Up"/></p>
         </div>
     </div>
 </div>
 </form>
-{% endif %}
+</div>
 {% endblock %}

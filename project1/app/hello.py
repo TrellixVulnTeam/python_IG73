@@ -37,20 +37,21 @@ def login():
             flash("You are not autorise to login")
             return render_template('login.html')
     else:
-        return render_template('login.html')
+        return render_template('login.html', form=LoginForm)
         c.close()
         conn.close()
 
-class RegistrationForm():
+class RegistrationForm(Form):
     username = StringField('Username', [validators.Length(min=4, max=256)])
     age = StringField('Age',[validators.Length(min=1, max=3)] )
     email = StringField('Email', [validators.Length(min=6, max=30)])
     password = PasswordField('Password', [validators.Required(), validators.EqualTo('password', message = "Password must be match.")])
     place = StringField('Place', [validators.Length(min=1, max=256)])
 
-@app.route('/regisration/', methods=['POST', 'GET'])
+@app.route('/registration/', methods=['POST', 'GET'])
 def registration():
-    form = RegistrationForm()
+    error = None
+    form = RegistrationForm(request.form)
     c, conn = connection()
     if request.method == 'POST' and form.validate():
         username = request.form.data
@@ -66,6 +67,7 @@ def registration():
             flash("Username already exist, Please choose another")
             return render_template('registration.html')
         else:
+           
             c.execute("INSERT INTO registration username= ?, age= ?, email= ?, password= ?, place= ?", (username, age, email, password, place))
             c.commit()
             flash("You are registered successfully")
@@ -77,7 +79,7 @@ def registration():
 
             return redirect(url_for('home'))
     
-    return render_template('registration.html')
+    return render_template('registration.html', form=form)
 
 
 

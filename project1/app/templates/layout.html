@@ -15,11 +15,11 @@
                 <ul class="menu">
                     <li><a href="{{ url_for('home')}}">Home</a></li>
                     {% if session['logged_in'] %}
-                    <li><a href="/logout">Logout</a></li>
+                    <li><a href="/logout/">Logout</a></li>
                     {% else %}
                     <li><a href="/login/">Login</a></li>
-                    <li><a href="/registration/">Sign Up</a></li>
                     {% endif %}
+                    <li><a href="/registration/">Sign Up</a></li>
 
                 </ul>
             </nav></strong>
