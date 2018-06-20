@@ -2,20 +2,22 @@
 {% block content %}
 <div class="container">
 <h2 class="logo">Registration Please</h2>
-
+{% from "_formhelper.html" import render_field %}
 <form action="/registration/" method="POST">
 <div class="registration">
     <div class="registration-screen">
         <div class="registration-form">
-            <p><input type='text' class="form-control" name="username" placeholder="Username"/></p>
-            <p><input type='int' class="form-control" name="age" placeholder="Age"/></p>
-            <p><input type='text' class="form-control" name="email" placeholder="Email"/></p>
-            <p><input type="password" class="form-control" name="password" placeholder="Password"/></p>
-            <p><input type='text' class="form-control" name="place" placeholder="Place"/></p>
-            <p><input type="submit" class="btn btn-primary btn-large btn-block" value="Sign Up"/></p>
+            <dl>
+                {{ render_field(form.username) }}
+                {{ render_field(form.age) }}
+                {{ render_field(form.email) }}
+                {{ render_field(form.password) }}
+                {{ render_field(form.place) }}
+            </dl>
+            <p><input type="submit" value="Submit"/></p>
         </div>
     </div>
-</div>
+</div> 
 </form>
 </div>
 {% endblock %}

@@ -42,7 +42,7 @@ def login():
         conn.close()
 
 class RegistrationForm(Form):
-    username = StringField('Username', [validators.Length(min=4, max=256)])
+    username = StringField('Username', [validators.Length(min=2, max=256)])
     age = StringField('Age',[validators.Length(min=1, max=3)] )
     email = StringField('Email', [validators.Length(min=6, max=30)])
     password = PasswordField('Password', [validators.Required(), validators.EqualTo('password', message = "Password must be match.")])
@@ -52,24 +52,24 @@ class RegistrationForm(Form):
 def registration():
     error = None
     form = RegistrationForm(request.form)
-    c, conn = connection()
+    
     if request.method == 'POST' and form.validate():
-        username = request.form.data
-        age = request.form.data
-        email = request.form.data
-        password = request.form.data
-        place = request.form.data
+        username = form.username.data
+        age = form.age.data
+        email = form.email.data
+        password = form.password.data
+        place = form.place.data
+        c, conn = connection()
 
-        c.execute("SELECT * FROM registration WHERE username= ?",username)
+        c.execute("SELECT * FROM registration WHERE username = ?", (username,))
         x = c.fetchone()
 
         if x:
             flash("Username already exist, Please choose another")
-            return render_template('registration.html')
+            return render_template('registration.html', form=form)
         else:
-           
-            c.execute("INSERT INTO registration username= ?, age= ?, email= ?, password= ?, place= ?", (username, age, email, password, place))
-            c.commit()
+            c.execute("INSERT INTO registration (username, age, email, password, place) VALUES(?, ?, ?, ?, ?)", (username, age, email, password, place))
+            conn.commit()
             flash("You are registered successfully")
             c.close()
             conn.close()
