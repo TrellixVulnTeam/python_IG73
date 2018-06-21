@@ -8,12 +8,14 @@
 <div class="login">
     <div class="login-screen">
         <div class="login-form">
-            <p><input type='text' class="form-control" name="username" placeholder="Username"/></p>
-            <p><input type="password" class="form-control" name="password" placeholder="Password"/></p>
+            <p><input type='text' class="form-control" name="username" placeholder="Username" value="{{ request.form.username}}"/></p>
+            <p><input type="password" class="form-control" name="password" placeholder="Password" value="{{ request.form.password}}"/></p>
             <p><input type="submit" class="btn btn-primary btn-large btn-block" value="Login"/></p>
         </div>
     </div>
 </div>
 </form>
+<p> {{ error }} </p>
+
 {% endif %}
 {% endblock %}

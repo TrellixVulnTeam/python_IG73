@@ -1,7 +1,10 @@
 {% extends "layout.html" %}
 {% block content %}
-<div class="container">
+
 <h2 class="logo">Registration Please</h2>
+{% if session['logged_in']%}
+<P>You are already registered user</P>
+{% else %}
 {% from "_formhelper.html" import render_field %}
 <form action="/registration/" method="POST">
 <div class="registration">
@@ -19,5 +22,5 @@
     </div>
 </div> 
 </form>
-</div>
+{% endif %}
 {% endblock %}

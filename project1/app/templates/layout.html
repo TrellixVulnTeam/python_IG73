@@ -14,13 +14,13 @@
             <strong><nav>
                 <ul class="menu">
                     <li><a href="{{ url_for('home')}}">Home</a></li>
-                    {% if session['logged_in'] %}
+                    {% if session.logged_in %}
                     <li><a href="/logout/">Logout</a></li>
                     {% else %}
                     <li><a href="/login/">Login</a></li>
-                    {% endif %}
+                    
                     <li><a href="/registration/">Sign Up</a></li>
-
+                    {% endif %}
                 </ul>
             </nav></strong>
 
@@ -28,6 +28,17 @@
     </header>
 
 <div class="container">
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-warning alert-dismissable" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="close"><span aria-hidden="true">&times;</span></button>
+                {{ message }}
+            </div>
+            {% endfor%}
+        {% endif %}
+    {% endwith %}
+
     {% block content %}
     {% endblock %}
 </div>

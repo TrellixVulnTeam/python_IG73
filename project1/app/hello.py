@@ -13,42 +13,40 @@ def home():
     return render_template('home.html')
 
 class LoginForm():
-    username = StringField('Username', [validators.length(min=1, max=256)])
-    password = PasswordField('Password', [validators.Required(), validators.EqualTo('password', message="Password must be match")] )
+    username = StringField('Username :', [validators.length(min=1, max=256)])
+    password = PasswordField('Password :', [validators.Required(), validators.EqualTo('password', message="Password must be match")] )
    
     
-@app.route('/login/', methods=['POST','GET'])
+@app.route('/login/', methods=["POST","GET"])
 def login():
     form = LoginForm()
     c,conn = connection()
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
+    if request.method == "POST":
         
-        c.execute("SELECT * FROM user WHERE username= ? AND password= ?",(username,password))
-        data = c.fetchone()[2]
+        c.execute("SELECT * FROM registration WHERE username= ? AND password= ?",(request.form['username'], request.form['password']))
+        data = c.fetchone()
 
         if data:
             session['logged_in'] = True
-            session['username'] = username
+            session['username'] = request.form['username']
             flash("You are now logged in")
             return redirect(url_for('home'))
         else:
-            flash("You are not autorise to login")
-            return render_template('login.html')
+            error = "Invalid user, Try again"
+            return render_template('login.html', error=error)
     else:
-        return render_template('login.html', form=LoginForm)
+        return render_template('login.html', form=form)
         c.close()
         conn.close()
 
 class RegistrationForm(Form):
-    username = StringField('Username', [validators.Length(min=2, max=256)])
-    age = StringField('Age',[validators.Length(min=1, max=3)] )
-    email = StringField('Email', [validators.Length(min=6, max=30)])
-    password = PasswordField('Password', [validators.Required(), validators.EqualTo('password', message = "Password must be match.")])
-    place = StringField('Place', [validators.Length(min=1, max=256)])
+    username = StringField('Username :', [validators.Length(min=2, max=256)])
+    age = StringField('Age :',[validators.Length(min=1, max=3)] )
+    email = StringField('Email :', [validators.Length(min=6, max=30)])
+    password = PasswordField('Password :', [validators.Required(), validators.EqualTo('password', message = "Password must be match.")])
+    place = StringField('Place :', [validators.Length(min=1, max=256)])
 
-@app.route('/registration/', methods=['POST', 'GET'])
+@app.route('/registration/', methods=["POST", "GET"])
 def registration():
     error = None
     form = RegistrationForm(request.form)
