@@ -2,25 +2,26 @@
 {% block content %}
 
 <h2 class="logo">Registration Please</h2>
+
 {% if session['logged_in']%}
 <P>You are already registered user</P>
 {% else %}
-{% from "_formhelper.html" import render_field %}
+
 <form action="/registration/" method="POST">
 <div class="registration">
     <div class="registration-screen">
         <div class="registration-form">
-            <dl>
-                {{ render_field(form.username) }}
-                {{ render_field(form.age) }}
-                {{ render_field(form.email) }}
-                {{ render_field(form.password) }}
-                {{ render_field(form.place) }}
-            </dl>
-            <p><input type="submit" value="Submit"/></p>
+            <p><input type='text' class="form-control" name="username" placeholder="Username" value="{{ request.form.username}}"/></p>
+            <p><input type='int' class="form-control" name="age" placeholder="Age" value="{{ request.form.age}}"/></p>
+            <p><input type="email" class="form-control" name="email" placeholder="Email" value="{{ request.form.email}}"/></p>
+            <p><input type="password" class="form-control" name="password" placeholder="Password" value="{{ request.form.password}}"/></p>
+            <p><input type="text" class="form-control" name="place" placeholder="Place" value="{{request.form.place}}"/></p>
+            <p><input type="submit" class="btn btn-primary btn-large btn-block" value="Signup"/></p>
+            
         </div>
     </div>
 </div> 
 </form>
+
 {% endif %}
 {% endblock %}
