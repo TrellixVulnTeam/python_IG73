@@ -20,7 +20,7 @@ class LoginForm():
 @app.route('/login/', methods=["POST","GET"])
 def login():
     form = LoginForm()
-    c,conn = connection()
+    c, conn = connection()
     if request.method == "POST":
         
         c.execute("SELECT * FROM registration WHERE username= ? AND password= ?",(request.form['username'], request.form['password']))

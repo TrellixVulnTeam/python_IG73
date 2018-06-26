@@ -1,6 +1,10 @@
 {% extends "layout.html" %}
 {% block content %}
+
     <h2>Registration Form</h2>
+{% if session['logged_in']%}
+<p>You are a registered user already</p>
+{% else %}
         <form action = "/registration/" method = "POST">
             <div class="registration">
                 <div class="registration-screen">
@@ -9,14 +13,12 @@
                         <p><input type = "int" class="form-control" placeholder="age" name = "age" value = "{{request.form.age}}"/></p>
                         <p><input type = "text" class = "form-control" placeholder="email" name = "email" value = "{{request.form.email}}"/></p>
                         <p><input type = "password" class = "form-control" placeholder="password" name = "password" value = "{{request.form.password}}"/></p>
-                        <p><input type = "text" class = "form-control" placeholder="place"  name = "place" value = "{{request.form.place}}"/></p>
-
                         <p><input type = "submit" class = "btn btn-primary btn-large btn-block" value = "Register" /></p>
                     </div>
                 </div>
             </div>
         </form>
 
-
+{% endif %}
 {% endblock %}
  

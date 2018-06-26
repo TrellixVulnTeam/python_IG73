@@ -22,81 +22,75 @@ def about_us():
 def about(name):
     return render_template('about.html', name=name)
 
-def login_required():
-    if 'logged_in' in session:
-        flash("You already log in")
-    else:
-        flash("You need to login first")
-        return redirect(url_for('login'))
+class LoginForm():
+    username = StringField('Username', [validators.length(min=1, max=256)])
+    password = PasswordField('Password', [validators.Required(), validators.EqualTo('password', message = "Password must be match.")])
 
-@app.route("/logout/")
-def logout():
-    session.clear() 
-    flash("You have been logged out")   
-    return redirect(url_for('home'))
-
-
-@app.route("/login/", methods =['GET', 'POST'] )
+@app.route('/login/', methods =["GET", "POST"] )
 def login():
     error= 'None'
-    c, conn = connection()
-    if request.method == 'POST':
-        data = c.execute("SELECT * FROM `user` WHERE `username` = ? AND `password` = ?", (request.form['username'], request.form['password']))
+    form = LoginForm()
+    c,conn = connection()
+    if request.method == "POST":
+        c.execute("SELECT * FROM user WHERE username= ? AND password= ?",(request.form['username'], request.form['password']))
         data = c.fetchone()
+
         if data:
             session['logged_in'] = True
             session['username'] = request.form['username']
             flash("You are now logged in")
             return redirect(url_for('home'))
         else:
-            error = "Invalid User"
-    return render_template('login.html', error=error)
+            error = "Invalid User, Try again"
+            return render_template('login.html', error=error)
+    else:
+        return render_template('login.html', form=form)
+        conn.close()
+        c.close()
 
 
 
 class RegistrationForm(Form):
-    username = StringField('Username', [validators.Length(min=4, max=256)])
+    username = StringField('Username', [validators.Length(min=1, max=256)])
     age = StringField('Age',[validators.Length(min=1, max=3)] )
     email = StringField('Email', [validators.Length(min=6, max=30)])
     password = PasswordField('Password', [validators.Required(), validators.EqualTo('password', message = "Password must be match.")])
-    place = StringField('Place', [validators.Length(min=1, max=256)])
     
-@app.route("/registration/", methods =['GET', 'POST'] )
+@app.route('/registration/', methods =["GET", "POST"])
 def registration():
+    error = None
     form = RegistrationForm(request.form)
-    c, conn = connection()
-    if request.method == "POST" and form.validate():
+    if request.method == 'POST' and form.validate():
         username = form.username.data
+        age = form.age.data
+        email = form.email.data
+        password = form.password.data
+        c,conn = connection()
                 
-        c.execute("SELECT * FROM registration WHERE username = (?)", [username])
-        x= c.fetchone()
+        c.execute("SELECT * FROM registration WHERE username = (?)", (username,))
+        x = c.fetchone()
         if x:
             flash("Username already exist, please choose another")
             return render_template('registration.html', form=form)        
         else:
-            username = form.username.data
-            age = form.age.data
-            email = form.email.data
-            password = form.password.data
-            place = form.place.data
-            c, conn = connection()
-
-            c.execute("INSERT INTO registration (username, age, email, password, place) VALUES (?, ?, ?, ?, ?)))", ([username], [age], [email], password, place) )
+            c.execute("INSERT INTO registration (username, age, email, password) VALUES(?, ?, ?, ?)", (username, age, email, password))
             conn.commit()
-           
+
             flash("Thanks for registration")
-            conn.close()
             c.close()
-
-            session["logged_in"] = True
+            conn.close()
+            session['logged_in'] = True
             session["username"] = request.form['username']
-            return render_template('home.html') 
+            return redirect(url_for('home'))
+    else:
+        return  render_template('registration.html',form=form)
 
-    return  render_template('registration.html',form=form)
+@app.route("/logout/")
+def logout():
+    session.clear()
+    flash("You have been logged out")   
+    return redirect(url_for('home'))
+
     
-    db.close()
-
-    
-
 if __name__ == "__main__":
     app.run(debug=True)
