@@ -1,8 +1,8 @@
 from flask import Flask, render_template, redirect, url_for, request, session, flash
 import sqlite3
 
+from flask_login import login_required, login_manager
 from wtforms import Form, StringField, BooleanField, PasswordField, DateTimeField, IntegerField, validators
-
 from dbconnect import connection
 
 
@@ -90,6 +90,26 @@ def logout():
     session.clear()
     flash("You have been logged out")   
     return redirect(url_for('home'))
+
+class ChangePasswordForm():
+    password = PasswordField('Password', [validators.Required()])
+
+@app.route("/changepassword", methods=['GET', 'POST'])
+@login_required
+def changepassword():
+    form = ChangePasswordForm()
+    if request.method == 'POST' and form.validate_on_submit():
+        user = current_user
+        user.password = form.password.data
+        db.session.add(user)
+        db.session.commit()
+        flash()
+        return render_template('login.html', form=form)
+    else:
+        return  render_template('change_password.html',form=form)
+
+
+
 
     
 if __name__ == "__main__":
